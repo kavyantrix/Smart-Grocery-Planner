@@ -1,0 +1,17 @@
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?
+  name          String?
+  image         String?
+  provider      String?   // 'email' | 'google' | 'apple'
+  providerId    String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Profile related fields
+  dietaryRestrictions String[]
+  allergies           String[]
+  familySize         Int       @default(1)
+  isAnonymous       Boolean   @default(false)
+}

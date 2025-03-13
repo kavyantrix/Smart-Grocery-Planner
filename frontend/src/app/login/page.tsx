@@ -6,7 +6,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-            Smart Grocery Planner
+            PantryPal AI
+
           </h1>
         </div>
         <LoginForm />

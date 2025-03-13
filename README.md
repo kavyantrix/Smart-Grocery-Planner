@@ -1,4 +1,5 @@
-# Smart Grocery Planner
+# PantryPal AI
+
 
 A modern AI-driven grocery management system that helps users plan, track, and automate their grocery shopping experience.
 

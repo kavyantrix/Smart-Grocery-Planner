@@ -3,6 +3,7 @@ import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/database';
+import { authMiddleware } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -34,7 +35,10 @@ router.post(
         data: {
           email,
           password: hashedPassword,
-          name
+          name,
+          dietaryRestrictions: [],
+          allergies: [],
+          familySize: 1
         },
       });
 
@@ -46,7 +50,6 @@ router.post(
 
       res.json({ token });
     } catch (error) {
-      console.log("🚀 ~ error:", error);
       res.status(500).json({ message: 'Server error' });
     }
   }
@@ -87,5 +90,30 @@ router.post(
     }
   }
 );
+
+// Get User Profile
+router.get('/profile', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        familySize: true,
+        dietaryRestrictions: true,
+        allergies: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 export default router;

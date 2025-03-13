@@ -6,6 +6,8 @@ import authRoutes from './routes/auth';
 import notificationsRoutes from './routes/notifications';
 import settingsRoutes from './routes/settings';
 import shoppingListRoutes from './routes/shoppingList';
+import actionsRoutes from './routes/actions';
+import aiRoutes from './routes/ai';
 
 dotenv.config();
 
@@ -14,7 +16,7 @@ const port = process.env.PORT || 8000;
 
 // Configure CORS
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:5000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -27,6 +29,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/user/settings', settingsRoutes);
 app.use('/api/shopping-list', shoppingListRoutes);
+app.use('/api/actions', actionsRoutes);
+app.use('/api/ai', aiRoutes);
+
 
 prisma.$connect()
   .then(() => {

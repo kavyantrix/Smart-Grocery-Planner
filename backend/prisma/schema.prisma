@@ -18,6 +18,17 @@ model Notification {
   updatedAt DateTime @updatedAt
 }
 
+model ChatMessage {
+  id        String   @id @default(cuid())
+  content   String
+  role      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Add this to your User model
 model User {
   id                  String         @id @default(cuid())
   email               String         @unique
@@ -33,6 +44,9 @@ model User {
   updatedAt           DateTime       @updatedAt
   notifications       Notification[]
   shoppingLists      ShoppingList[]
+  orders             Order[]
+  aiGeneratedLists AIGeneratedList[]
+  chatMessages ChatMessage[]
 }
 
 
@@ -60,4 +74,32 @@ model ShoppingItem {
   updatedAt     DateTime    @updatedAt
 
   @@index([shoppingListId])
+}
+
+
+model Order {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  items     Json[]
+  status    String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  total     Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+
+model AIGeneratedList {
+  id          String   @id @default(cuid())
+  name        String
+  items       Json     // Stores the array of items
+  suggestions Json     // Stores the array of suggestions
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("ai_generated_lists")
 }

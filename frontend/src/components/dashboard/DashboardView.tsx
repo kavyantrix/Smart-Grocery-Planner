@@ -1,28 +1,32 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useAppSelector, useAppDispatch } from '@/hooks/redux' // Add useAppDispatch
+import { useAppSelector } from '@/hooks/redux' // Add useAppDispatch
 import { LogOut } from "lucide-react" // Add LogOut icon
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Bell, ShoppingCart, Settings, Calendar, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Switch } from "@/components/ui/switch"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useRouter } from "next/navigation"
 import NotificationsCard from "./NotificationsCard"
 import SettingsCard from "./SettingsCard"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import ShoppingListCard from "./ShoppingListCard"
+import ChatBot from '@/components/chat/ChatBot';
+import { CreateShoppingListDialog } from "./CreateShoppingListDialog"
+import { PastOrdersDialog } from "./PastOrdersDialog"
+import AIGroceryGenerator from '../grocery/AIGroceryGenerator'
 
 export default function DashboardView() {
-  const dispatch = useAppDispatch() // Add dispatch
   const { user } = useAppSelector((state) => state.auth)
   const router = useRouter()
   const [greeting, setGreeting] = useState("")
   const [showNotifications, setShowNotifications] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  const [showCreateList, setShowCreateList] = useState(false)
+  const [showPastOrders, setShowPastOrders] = useState(false)
 
   useEffect(() => {
     const hour = new Date().getHours()
@@ -30,6 +34,13 @@ export default function DashboardView() {
     else if (hour < 18) setGreeting("Good Afternoon")
     else setGreeting("Good Evening")
   }, [])
+
+
+  const handleLogout = () => {
+  localStorage.removeItem('token')
+  window.location.href = '/login'
+}
+
 
   return (
     <div className="min-h-screen bg-black">
@@ -103,14 +114,25 @@ export default function DashboardView() {
               <CardTitle className="text-white">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button className="w-full bg-gradient-to-r from-green-400 to-blue-500">
+              <Button 
+                className="w-full bg-gradient-to-r from-green-400 to-blue-500"
+                onClick={() => setShowCreateList(true)}
+              >
                 Create Shopping List
               </Button>
-              <Button className="w-full" variant="outline">
+              <Button 
+                className="w-full" 
+                variant="outline"
+                onClick={() => setShowPastOrders(true)}
+              >
                 View Past Orders
               </Button>
-              <Button className="w-full" variant="outline">
-                Manage Preferences
+              <Button 
+                className="w-full" 
+                variant="outline"
+                onClick={() => router.push('/ai-lists')}
+              >
+                View AI Lists
               </Button>
             </CardContent>
           </Card>
@@ -247,6 +269,7 @@ export default function DashboardView() {
               </div>
             </CardContent>
           </Card>
+          <AIGroceryGenerator />
         </div>
       </main>
 
@@ -262,12 +285,23 @@ export default function DashboardView() {
           <SettingsCard />
         </DialogContent>
       </Dialog>
+      <ChatBot />
+
+      <CreateShoppingListDialog 
+  open={showCreateList} 
+  onOpenChange={setShowCreateList}
+/>
+<PastOrdersDialog 
+  open={showPastOrders} 
+  onOpenChange={setShowPastOrders}
+/>  
+
     </div>
   )
 }
 
 
-const handleLogout = () => {
-  localStorage.removeItem('token')
-  window.location.href = '/login'
-}
+
+
+
+

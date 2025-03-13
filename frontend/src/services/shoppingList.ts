@@ -19,18 +19,24 @@ export interface ShoppingList {
 }
 
 export const shoppingListApi = {
-  getActiveList: () => 
+  getAllLists: async () => 
+    api.get<ShoppingList[]>('/actions/shopping-list/all'),
+
+  getActiveList: async () => 
     api.get<ShoppingList>('/shopping-list'),
 
-  createList: (name?: string) => 
+  createList: async (name?: string) => 
     api.post<ShoppingList>('/shopping-list', { name }),
 
-  addItem: (listId: string, name: string, quantity: string) =>
+  addItem: async (listId: string, name: string, quantity: string) =>
     api.post<ShoppingItem>(`/shopping-list/${listId}/items`, { name, quantity }),
 
-  updateItem: (listId: string, itemId: string, checked: boolean) =>
+  addMultipleItems: async (listId: string, items: { name: string; quantity: string }[]) =>
+    api.post<ShoppingItem[]>(`ai/shopping-list/${listId}/items/batch`, { items }),
+
+  updateItem: async (listId: string, itemId: string, checked: boolean) =>
     api.patch<ShoppingItem>(`/shopping-list/${listId}/items/${itemId}`, { checked }),
 
-  deleteItem: (listId: string, itemId: string) =>
+  deleteItem: async (listId: string, itemId: string) =>
     api.delete(`/shopping-list/${listId}/items/${itemId}`),
 };

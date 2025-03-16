@@ -21,7 +21,7 @@ export default function AIListsPage() {
               <Button variant="ghost" onClick={() => router.back()}>
                 <ArrowLeft className="h-5 w-5 text-gray-400" />
               </Button>
-              <h1 className="text-xl font-semibold text-white">AI-Generated Lists</h1>
+              <h1 className="text-xl font-semibold text-white">Shopping Lists</h1>
             </div>
             <Button 
               onClick={() => setShowGenerator(true)}

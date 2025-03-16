@@ -1,3 +1,6 @@
+"use client"
+
+
 import { Hero } from "@/components/landing/Hero"
 import { Features } from "@/components/landing/Features"
 import Image from 'next/image'
@@ -5,7 +8,22 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart, Users, Sparkles } from 'lucide-react'
 
+
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
+
 export default function Home() {
+  const router = useRouter()
+  const { user } = useAuth()
+
+  const handleGetStarted = () => {
+    if (user) {
+      router.push('/dashboard')
+    } else {
+      router.push('/login')
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       <div className="container mx-auto px-4">
@@ -33,11 +51,14 @@ export default function Home() {
               Transform your grocery shopping experience with personalized recommendations, smart inventory management, and AI-driven meal planning.
             </p>
             <div className="flex justify-center gap-4">
-              <Link href="/signup">
-                <Button size="lg" className="bg-gradient-to-r from-green-400 to-blue-500">
+              {/* <Link href="/signup"> */}
+                <Button 
+                  className="bg-gradient-to-r from-green-400 to-blue-500"
+                  onClick={handleGetStarted}
+                >
                   Get Started
                 </Button>
-              </Link>
+              {/* </Link> */}
               <Link href="/learn">
                 <Button size="lg" variant="outline">
                   Learn More

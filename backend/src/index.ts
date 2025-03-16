@@ -8,6 +8,7 @@ import settingsRoutes from './routes/settings';
 import shoppingListRoutes from './routes/shoppingList';
 import actionsRoutes from './routes/actions';
 import aiRoutes from './routes/ai';
+import vendorRoutes from './routes/vendorRoutes'
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use('/api/user/settings', settingsRoutes);
 app.use('/api/shopping-list', shoppingListRoutes);
 app.use('/api/actions', actionsRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/vendors', vendorRoutes)
 
 
 prisma.$connect()

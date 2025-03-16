@@ -156,16 +156,21 @@ router.post('/shopping-list/:listId/items/batch', authMiddleware, async (req, re
       return res.status(404).json({ message: 'Shopping list not found or unauthorized' });
     }
 
-
-    const newItems = await prisma.shoppingItem.findMany({
-      where: {
-        shoppingListId: listId,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: items.length,
-    });
+    // Create all items in a single transaction
+    const newItems = await prisma.$transaction(
+      items.map(item => 
+        prisma.shoppingItem.create({
+          data: {
+            name: item.name,
+            quantity: item.quantity,
+            checked: false,
+            shoppingListId: listId,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        })
+      )
+    );
 
     res.json(newItems);
   } catch (error) {

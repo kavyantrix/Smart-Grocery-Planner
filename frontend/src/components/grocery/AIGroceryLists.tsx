@@ -77,7 +77,7 @@ export default function AIGroceryLists() {
       ) : lists.length === 0 ? (
         <Card className="bg-gray-900/50 border-gray-800">
           <CardContent className="py-6">
-            <p className="text-gray-400 text-center">No AI-generated lists yet</p>
+            <p className="text-gray-400 text-center">No Shopping yet</p>
           </CardContent>
         </Card>
       ) : (
@@ -117,21 +117,25 @@ export default function AIGroceryLists() {
                   <div className="bg-gray-800/50 p-4 rounded-lg">
                     <h3 className="text-white font-medium mb-3">Smart Suggestions</h3>
                     <ul className="space-y-2">
-                      {list.suggestions.map((suggestion: string, index: number) => (
-                        <li key={index} className="text-gray-300">
-                          • {suggestion}
-                        </li>
-                      ))}
+                      {Array.isArray(list.suggestions) && list.suggestions.length > 0 ? (
+                        list.suggestions.map((suggestion: string, index: number) => (
+                          <li key={index} className="text-gray-300">
+                            • {suggestion}
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-gray-300">No suggestions available</li>
+                      )}
                     </ul>
                   </div>
 
-                  <Button 
+                  {/* <Button 
                     className="w-full"
                     onClick={() => createShoppingList(list.items)}
                   >
                     <ShoppingCart className="h-4 w-4 mr-2" />
                     Create Shopping List
-                  </Button>
+                  </Button> */}
                 </div>
               </CardContent>
             )}

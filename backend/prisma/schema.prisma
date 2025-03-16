@@ -47,6 +47,8 @@ model User {
   orders             Order[]
   aiGeneratedLists AIGeneratedList[]
   chatMessages ChatMessage[]
+  scheduledOrders ScheduledOrder[]
+
 }
 
 
@@ -102,4 +104,78 @@ model AIGeneratedList {
   updatedAt   DateTime @updatedAt
 
   @@map("ai_generated_lists")
+}
+
+
+// Add these models to your existing schema
+
+model Product {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  category    String
+  imageUrl    String?
+  barcode     String?      @unique
+  sku         String?      @unique
+  brand       String?
+  weight      Float?
+  unit        String?
+  inStock     Boolean      @default(true)
+  vendorProducts VendorProduct[]
+  orderItems     OrderItem[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model VendorProduct {
+  id          String   @id @default(cuid())
+  productId   String
+  vendorId    String
+  price       Float
+  vendorSku   String?
+  inStock     Boolean  @default(true)
+  product     Product  @relation(fields: [productId], references: [id])
+  vendor      Vendor   @relation(fields: [vendorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([productId, vendorId])
+}
+
+model Vendor {
+  id            String          @id @default(cuid())
+  name          String
+  apiKey        String?
+  apiSecret     String?
+  active        Boolean         @default(true)
+  products      VendorProduct[]
+  orders        ScheduledOrder[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model ScheduledOrder {
+  id          String      @id @default(cuid())
+  userId      String
+  vendorId    String
+  frequency   String      // weekly, biweekly, monthly
+  status      String      @default("active")
+  items       OrderItem[]
+  vendor      Vendor      @relation(fields: [vendorId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id              String         @id @default(cuid())
+  scheduledOrder  ScheduledOrder @relation(fields: [scheduledOrderId], references: [id])
+  scheduledOrderId String
+  productId       String
+  product         Product        @relation(fields: [productId], references: [id])
+  quantity        Int
+  price           Float
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
